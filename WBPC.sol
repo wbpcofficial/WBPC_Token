@@ -43,6 +43,8 @@ contract owned {
     }
 
     function transferOwnership(address newOwner) public onlyOwner {
+        require(newOwner != address(0), "Ownable: new owner is the zero address");
+        emit OwnershipTransferred(_owner, newOwner);
         owner = newOwner;
     }
 }
@@ -68,7 +70,7 @@ contract TokenERC20 {
     mapping(address => mapping(address => uint256)) public allowance;
 
     event Transfer(address indexed from, address indexed to, uint256 value);
-
+    event Approval(address indexed tokenOwner, address indexed spender, uint tokens);
     event Burn(address indexed from, uint256 value);
 
     constructor() public {}
@@ -108,6 +110,7 @@ contract TokenERC20 {
         returns (bool success)
     {
         allowance[msg.sender][_spender] = _value;
+        emit Approval(msg.sender, _spender, _value);
         return true;
     }
 
